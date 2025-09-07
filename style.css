@@ -1,32 +1,195 @@
-body{
-    text-align: center;
+/* General Styling */
+:root {
+    --dark-bg: #1a1a2e; /* Deep dark blue-purple */
+    --darker-bg: #0f0f1d; /* Even darker for accents */
+    --accent-green: #00f5d4; /* Neon green/teal */
+    --accent-red: #ff0f7b; /* Neon pink/red */
+    --accent-yellow: #feda00; /* Bright yellow */
+    --accent-blue: #007bff; /* Vibrant blue */
+    --text-color: #e0e0e0;
+    --light-text: #ffffff;
+    --border-color: rgba(255, 255, 255, 0.1);
+    --shadow-light: rgba(255, 255, 255, 0.05);
+    --shadow-dark: rgba(0, 0, 0, 0.5);
 }
-.btn-container{
+
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif; /* Modern, clean font */
+    background: linear-gradient(135deg, var(--dark-bg) 0%, var(--darker-bg) 100%);
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden; /* For a clean, focused look */
+    perspective: 1000px; /* For 3D transforms */
+}
+
+/* Typography */
+h1 {
+    font-size: 4em;
+    margin-bottom: 0.5em;
+    font-weight: 800;
+    letter-spacing: 2px;
+    background: linear-gradient(90deg, var(--accent-green) 0%, var(--accent-blue) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 20px rgba(0, 245, 212, 0.4);
+}
+
+h2 {
+    font-size: 1.6em;
+    margin-bottom: 3em;
+    color: var(--text-color);
+    letter-spacing: 1px;
+    opacity: 0.8;
+}
+
+/* Game Container */
+.btn-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 25px;
+    padding: 35px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    border: 1px solid var(--border-color);
+}
+
+/* Individual Buttons */
+.btn {
+    width: 180px;
+    height: 180px;
+    border-radius: 20px;
     display: flex;
     justify-content: center;
+    align-items: center;
+    font-size: 3em;
+    font-weight: bold;
+    color: var(--light-text);
+    cursor: pointer;
+    border: 3px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Smooth easing */
+    position: relative;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    transform: translateZ(0); /* Fix for some browsers with 3D */
 }
-.btn{
-    height: 200px;
-    width: 200px;
-    border: 10px solid black;
-    border-radius: 20%;
-    margin: 10px 10px 15px 10px;
+
+.btn::before { /* Inner gradient shine */
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 100%);
+    z-index: 1;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
 }
-.yellow{
-    background-color: #ffd166;
+
+.btn:hover::before {
+    opacity: 0;
 }
-.red{
-    background-color: #ef476f;
+
+/* Specific button colors */
+.red { background: linear-gradient(145deg, #ff3d6a, var(--accent-red)); } /* Pink-red */
+.yellow { background: linear-gradient(145deg, #ffd700, var(--accent-yellow)); } /* Gold-yellow */
+.purple { background: linear-gradient(145deg, #8a2be2, #4b0082); } /* Darker purple */
+.green { background: linear-gradient(145deg, #00e676, var(--accent-green)); } /* Bright green-teal */
+
+/* Pressed / Active State */
+.btn.pressed {
+    transform: scale(1.08) translateY(-5px) translateZ(10px); /* Lift and enlarge */
+    box-shadow: 0 0 40px var(--btn-glow-color, rgba(255, 255, 255, 0.7)),
+                0 0 80px var(--btn-glow-color-light, rgba(255, 255, 255, 0.5));
+    border-color: rgba(255, 255, 255, 0.8);
+    color: var(--light-text);
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
 }
-.purple{
-    background-color: #26547c;
+
+/* Custom glow colors for pressed state */
+.red.pressed {
+    --btn-glow-color: var(--accent-red);
+    --btn-glow-color-light: rgba(255, 15, 123, 0.5);
 }
-.green{
-    background-color: #06d6a0;
+.yellow.pressed {
+    --btn-glow-color: var(--accent-yellow);
+    --btn-glow-color-light: rgba(254, 218, 0, 0.5);
 }
-.flash{
-    background-color: white;
+.purple.pressed {
+    --btn-glow-color: #8a2be2;
+    --btn-glow-color-light: rgba(138, 43, 226, 0.5);
 }
-.userflash{
-    background-color: brown;
+.green.pressed {
+    --btn-glow-color: var(--accent-green);
+    --btn-glow-color-light: rgba(0, 230, 118, 0.5);
+}
+
+/* Game Over Effect */
+.game-over {
+    background: linear-gradient(135deg, #2e1a1a 0%, #1d0f0f 100%); /* Reddish dark background */
+    animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
+
+@keyframes shake {
+    10%, 90% { transform: translate3d(-1px, 0, 0); }
+    20%, 80% { transform: translate3d(2px, 0, 0); }
+    30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+    40%, 60% { transform: translate3d(4px, 0, 0); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 3em;
+        margin-bottom: 0.3em;
+    }
+    h2 {
+        font-size: 1.3em;
+        margin-bottom: 2em;
+    }
+    .btn {
+        width: 140px;
+        height: 140px;
+        font-size: 2.5em;
+        border-radius: 15px;
+    }
+    .btn-container {
+        padding: 25px;
+        gap: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 2.2em;
+        letter-spacing: 1px;
+    }
+    h2 {
+        font-size: 1em;
+        margin-bottom: 1.5em;
+        text-align: center;
+    }
+    .btn {
+        width: 110px;
+        height: 110px;
+        font-size: 2em;
+        border-radius: 12px;
+    }
+    .btn-container {
+        padding: 20px;
+        gap: 15px;
+    }
 }

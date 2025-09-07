@@ -1,77 +1,81 @@
-let gameSeq=[];
-let userSeq=[];
-let btns = ["yellow","red","green","purple"];
+let gameSeq = [];
+let userSeq = [];
+let btns = ["red", "yellow", "purple", "green"]; // Matched the order in the HTML
+
 let started = false;
 let level = 0;
-let highestScore = 0;
+
 let h2 = document.querySelector("h2");
-function btnFlash(btn){
-    btn.classList.add("flash");
-    setTimeout(function(){
-        btn.classList.remove("flash");
-    },250);
 
+// CHANGED: Combined both flash functions into one that uses the new CSS class
+function btnFlash(btn) {
+    btn.classList.add("pressed");
+    setTimeout(function () {
+        btn.classList.remove("pressed");
+    }, 250);
 }
-function userFlash(btn){
-    btn.classList.add("userflash");
-    setTimeout(function(){
-        btn.classList.remove("userflash");
-    },250);
 
-}
-function levelUp(){
+function levelUp() {
     userSeq = [];
     level++;
     h2.innerText = `Level ${level}`;
-    let randIdx = Math.floor(Math.random()*3);
-    let randColor = btns[randIdx];
-    let btn = document.querySelector(`.${randColor}`);
-    btnFlash(btn);
-    gameSeq.push(randColor);
-    console.log(gameSeq);
 
+    // FIXED: Changed from 3 to 4 so all buttons are included
+    let randIdx = Math.floor(Math.random() * 4);
+    let randColor = btns[randIdx];
+    let randBtn = document.querySelector(`.${randColor}`);
+    
+    gameSeq.push(randColor);
+    console.log(`Game Sequence: ${gameSeq}`);
+    btnFlash(randBtn);
 }
-function checkAns(idx){
+
+function checkAns(idx) {
     if (userSeq[idx] === gameSeq[idx]) {
         if (userSeq.length == gameSeq.length) {
-            setTimeout(levelUp(),1000);
+            // FIXED: Corrected the setTimeout syntax
+            setTimeout(levelUp, 1000);
         }
+    } else {
+        h2.innerHTML = `Game Over! Your score was <b>${level}</b> <br> Press any key to start again.`;
+        
+        // CHANGED: Using the new .game-over class for a better effect
+        document.querySelector("body").classList.add("game-over");
+        setTimeout(function () {
+            document.querySelector("body").classList.remove("game-over");
+        }, 200);
 
-    }
-    else{
-        h2.innerHTML = `Game Over! Your score was <b>${level - 1} </b><br>Press any key to start.`;
-        document.querySelector("body").style.backgroundColor = "red";
-        setTimeout(function(){
-            document.querySelector("body").style.backgroundColor = "white";
-        },150);
         reset();
     }
 }
 
-function btnPress(){
-    console.log("Button was pressed");
+function btnPress() {
     let btn = this;
-    userFlash(btn);
-    userSeq.push(btn.classList[1]);
-    console.log(userSeq);
-    checkAns(userSeq.length -1);
+    btnFlash(btn); // Use the same flash effect for user and game
+
+    let userColor = btn.getAttribute("class").split(" ")[1]; // A more robust way to get the color
+    userSeq.push(userColor);
+    
+    console.log(`User Sequence: ${userSeq}`);
+    checkAns(userSeq.length - 1);
 }
-document.addEventListener("keypress",function(){
-    if (started == false) {
-        started = true; 
+
+document.addEventListener("keypress", function () {
+    if (!started) {
         console.log("Game Started");
+        started = true;
         levelUp();
     }
-
-})
+});
 
 let allBtns = document.querySelectorAll(".btn");
-for (btn of allBtns){
-    btn.addEventListener("click",btnPress);
+for (let btn of allBtns) {
+    btn.addEventListener("click", btnPress);
 }
-function reset(){
+
+function reset() {
     started = false;
-    level = 0;
     gameSeq = [];
     userSeq = [];
+    level = 0;
 }
